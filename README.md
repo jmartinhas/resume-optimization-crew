@@ -16,7 +16,7 @@ An AI-powered tool that optimizes your resume for specific job applications usin
 1. Clone the repository and install dependencies:
 
     ```bash
-    git clone https://github.com/tonykipkemboi/resume-optimization-crew.git
+    git clone https://github.com/jmartinhas/resume-optimization-crew.git
     cd resume-optimization-crew
     ```
 
