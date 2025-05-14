@@ -2,10 +2,12 @@
 name = "resume_crew"
 version = "0.1.0"
 description = "resume-crew using crewAI"
-authors = [{ name = "Your Name", email = "you@example.com" }]
+authors = [
+    { name = "Martin Helmhout", email = "linuxconsulting2@gmail.com" },
+]
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "crewai[tools]>=0.95.0,<1.0.0",
+    "crewai[tools]>=0.119.0,<1.0.0",
     "ollama>=0.4.7",
 ]
 
@@ -17,8 +19,7 @@ replay = "resume_crew.main:replay"
 test = "resume_crew.main:test"
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
-
-[tool.crewai]
-type = "crew"
