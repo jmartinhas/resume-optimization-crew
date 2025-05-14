@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
-from crewai_tools import SerperDevTool, ScrapeWebsiteTool
-from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
+from crewai_tools import SerperDevTool, ScrapeWebsiteTool, FileReadTool
+# from crewai.knowledge.source.pdf_knowledge_source import PDFKnowleFFiledgeSource
 from .models import (
     JobRequirements,
     ResumeOptimization,
@@ -16,17 +16,24 @@ class ResumeCrew():
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
 
-    def __init__(self) -> None:
-        """Sample resume PDF for testing from https://www.hbs.edu/doctoral/Documents/job-market/CV_Mohan.pdf"""
-        self.resume_pdf = PDFKnowledgeSource(file_paths="CV_Mohan.pdf")
+    def __init__(self, file_path: str, llm_model: str) -> None:
+        """Load CV from pdf"""
+        # self.resume_pdf = PDFKnowledgeSource(file_paths=file_path)
+        self.resume_file_read_tool = FileReadTool(
+            file_path=file_path,
+            description='A tool to read the CV file.'
+        )
+        self.llm_model = llm_model
+        self.llm = LLM(llm_model)
 
     @agent
     def resume_analyzer(self) -> Agent:
         return Agent(
             config=self.agents_config['resume_analyzer'],
             verbose=True,
-            llm=LLM("o1"),
-            knowledge_sources=[self.resume_pdf]
+            llm=LLM(self.llm_model, temperature=0),
+            tools = [self.resume_file_read_tool]
+            # knowledge_sources=[self.resume_pdf]
         )
     
     @agent
@@ -35,7 +42,7 @@ class ResumeCrew():
             config=self.agents_config['job_analyzer'],
             verbose=True,
             tools=[ScrapeWebsiteTool()],
-            llm=LLM("o1")
+            llm=self.llm
         )
 
     @agent
@@ -43,9 +50,9 @@ class ResumeCrew():
         return Agent(
             config=self.agents_config['company_researcher'],
             verbose=True,
-            tools=[SerperDevTool()],
-            llm=LLM("o1"),
-            knowledge_sources=[self.resume_pdf]
+            tools=[SerperDevTool(), self.resume_file_read_tool],
+            llm=self.llm,
+            # knowledge_sources=[self.resume_pdf]
         )
 
     @agent
@@ -53,7 +60,7 @@ class ResumeCrew():
         return Agent(
             config=self.agents_config['resume_writer'],
             verbose=True,
-            llm=LLM("o1")
+            llm=self.llm
         )
 
     @agent
@@ -61,7 +68,7 @@ class ResumeCrew():
         return Agent(
             config=self.agents_config['report_generator'],
             verbose=True,
-            llm=LLM("o1")
+            llm=self.llm
         )
 
     @task
@@ -109,5 +116,6 @@ class ResumeCrew():
             tasks=self.tasks,
             verbose=True,
             process=Process.sequential,
-            knowledge_sources=[self.resume_pdf]
+            # knowledge_sources=[self.resume_pdf]
+            tools = [self.resume_file_read_tool]
         )
