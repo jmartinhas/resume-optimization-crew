@@ -1,12 +1,13 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool, FileReadTool
-# from crewai.knowledge.source.pdf_knowledge_source import PDFKnowleFFiledgeSource
+from utils.convert2md import file2md
 from .models import (
     JobRequirements,
     ResumeOptimization,
     CompanyResearch
 )
+import os
 
 
 @CrewBase
@@ -18,9 +19,9 @@ class ResumeCrew():
 
     def __init__(self, file_path: str, llm_model: str) -> None:
         """Load CV from pdf"""
-        # self.resume_pdf = PDFKnowledgeSource(file_paths=file_path)
+        md_file_path = file2md(os.path.join('input', file_path))
         self.resume_file_read_tool = FileReadTool(
-            file_path=file_path,
+            file_path=md_file_path,
             description='A tool to read the CV file.'
         )
         self.llm_model = llm_model
