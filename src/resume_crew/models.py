@@ -1,5 +1,7 @@
 from typing import List, Dict, Optional
-from pydantic import BaseModel, Field, confloat
+from pydantic import BaseModel, Field
+from typing_extensions import Annotated
+
 
 class SkillScore(BaseModel):
     """Represents the score and relevance of a specific skill for a candidate in relation to a job requirement.
@@ -17,12 +19,9 @@ class SkillScore(BaseModel):
     """
     skill_name: str = Field(description="Name of the skill being scored")
     required: bool = Field(description="Whether this skill is required or nice-to-have")
-    match_level: confloat(ge=0, le=1) = Field(description="How well the candidate's experience matches (0-1)")
+    match_level: Annotated[float, Field(ge=0, le=1, description="How well the candidate's experience matches (0-1)")]
     years_experience: Optional[float] = Field(description="Years of experience with this skill", default=None)
-    context_score: confloat(ge=0, le=1) = Field(
-        description="How relevant the skill usage context is to the job requirements",
-        default=0.5
-    )
+    context_score: Annotated[float, Field(ge=0, le=1, description="How relevant the skill usage context is to the job requirements", default=0.5)]
 
     @classmethod
     def to_markdown(cls):
@@ -63,22 +62,22 @@ class JobMatchScore(BaseModel):
             Generates a markdown-formatted string representation of the job match score,
             including all scoring components, strengths, gaps, skill details, and scoring factors.
     """
-    overall_match: confloat(ge=0, le=100) = Field(
+    overall_match: Annotated[float, Field(ge=0, le=100, description="Overall match percentage (0-100)")] = Field(
         description="Overall match percentage (0-100)"
     )
-    technical_skills_match: confloat(ge=0, le=100) = Field(
+    technical_skills_match: Annotated[float, Field(ge=0, le=100, description="Technical skills match percentage")] = Field(
         description="Technical skills match percentage"
     )
-    soft_skills_match: confloat(ge=0, le=100) = Field(
+    soft_skills_match: Annotated[float, Field(ge=0, le=100, description="Soft skills match percentage")] = Field(
         description="Soft skills match percentage"
     )
-    experience_match: confloat(ge=0, le=100) = Field(
+    experience_match: Annotated[float, Field(ge=0, le=100, description="Experience level match percentage")] = Field(
         description="Experience level match percentage"
     )
-    education_match: confloat(ge=0, le=100) = Field(
+    education_match: Annotated[float, Field(ge=0, le=100, description="Education requirements match percentage")] = Field(
         description="Education requirements match percentage"
     )
-    industry_match: confloat(ge=0, le=100) = Field(
+    industry_match: Annotated[float, Field(ge=0, le=100, description="Industry experience match percentage")] = Field(
         description="Industry experience match percentage"
     )
     skill_details: List[SkillScore] = Field(
