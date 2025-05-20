@@ -1,11 +1,11 @@
 from json import load
-from turtle import width
 import streamlit as st
 import os
 from src.utils.output_handler import capture_output
 from src.utils.md2pdf import st_md2pdf
 from src.utils.json2pdf import json_to_pdf
 from resume_crew.main import run
+from resume_crew.models import CompanyResearch, JobRequirements, ResumeOptimization
 
 def validate_non_empty(st_field):
     try:
@@ -100,54 +100,48 @@ with col2:
                     st.error(f"An error occurred: {str(e)}")
                     st.stop()
         
-    json_to_pdf('output/company_research.json','output/company_research.pdf')
-
-    
-    with open("output/company_research.pdf", "rb") as pdf_file:
-        PDFbyte = pdf_file.read()
+    md_content = CompanyResearch.json_to_md()
 
     st.divider()
     download_col1, download_col2, download_col3 = st.columns([1, 2, 1])
     with download_col2:
-        st.markdown("### 📥 Download PDF Company Research Report")
+        st.markdown("### 📥 Download MarkDown Company Research Report")
         
         # Download as Markdown
         st.download_button(
-            label="Download PDF Company Report",
-            data=PDFbyte,
-            file_name="output/company_research.pdf",
+            label="Download MarkDown Company Report",
+            data=md_content.encode('utf-8'),
+            file_name="output/company_research.md",
             mime="application/octet-stream",
             help="Download the company research report in Markdown format"
         )
-    json_to_pdf('output/job_analysis.json','output/job_analysis.pdf')
-    with open("output/job_analysis.pdf", "rb") as pdf_file:
-        PDFbyte = pdf_file.read()
+    
+
+    md_content = JobRequirements.json_to_md()
     st.divider()
     download_col1, download_col2, download_col3 = st.columns([1, 2, 1])
     with download_col2:
-        st.markdown("### 📥 Download Job Analysis Resarch Report")
+        st.markdown("### 📥 Download MarkDown Job Analysis Report")
         
         # Download as Markdown
         st.download_button(
             label="Download Job Analysis Report",
-            data=PDFbyte,
-            file_name="output/job_analysis.pdf",
+            data=md_content.encode('utf-8'),
+            file_name="output/job_analysis.md",
             mime="application/octet-stream",
             help="Download the job analyis report"
         )
-    json_to_pdf('output/resume_optimization.json','output/resume_optimization.pdf')
-    with open("output/resume_optimization.pdf", "rb") as pdf_file:
-        PDFbyte = pdf_file.read()
+    md_content = ResumeOptimization.json_to_md()
     st.divider()
     download_col1, download_col2, download_col3 = st.columns([1, 2, 1])
     with download_col2:
-        st.markdown("### 📥 Download Resume Optimization Report")
+        st.markdown("### 📥 Download MarkDown Resume Optimization Report")
         
         # Download as Markdown
         st.download_button(
             label="Download Resume Optimization Report",
-            data=PDFbyte,
-            file_name="output/resume_optimization.pdf",
+            data=md_content.encode('utf-8'),
+            file_name="output/resume_optimization.md",
             mime="application/octet-stream",
             help="Download the reume optimization report"
         )
@@ -158,31 +152,29 @@ with col2:
     st.divider()
     download_col1, download_col2, download_col3 = st.columns([1, 2, 1])
     with download_col2:
-        st.markdown("### 📥 Download Final Report")
+        st.markdown("### 📥 Download MarkDown Final Report")
         
         # Download as Markdown
         st.download_button(
             label="Download Final Report",
-            data=PDFbyte,
-            file_name="output/final_report.pdf",
+            data="output/final_report.md",
+            file_name="output/final_report.md",
             mime="application/octet-stream",
             help="Download final report"
         )
-    st_md2pdf('output/optimized_resume.md', 'output/optimized_resume.pdf')
-    with open("output/optimized_resume.pdf", "rb") as pdf_file:
-        PDFbyte = pdf_file.read()
+    
     st.divider()
     download_col1, download_col2, download_col3 = st.columns([1, 2, 1])
     with download_col2:
-        st.markdown("### 📥 Download Optimzed Resume Report")
+        st.markdown("### 📥 Download Optimized Resume Report")
         
         # Download as Markdown
         st.download_button(
             label="Download Final Report",
-            data=PDFbyte,
-            file_name="output/optimized_resume.pdf",
+            data="output/optimized_resume.md",
+            file_name="output/optimized_resume.md",
             mime="application/octet-stream",
-            help="Download Optimzed Resume report"
+            help="Download Optimized Resume report"
         )
 
 # Add footer
