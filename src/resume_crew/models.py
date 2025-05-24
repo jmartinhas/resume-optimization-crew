@@ -12,7 +12,7 @@ class SkillScore(BaseModel):
     context_score: Annotated[float, Field(ge=0, le=1, description="How relevant the skill usage context is to the job requirements", default=0.5)]
     def to_markdown(self):
         """
-        Generates a markdown string representation of the CompanyResearch model.
+        Generates a markdown string representation of the SkillScore model.
         Uses the model's attributes and documentation.
         """
         markdown = f"""
